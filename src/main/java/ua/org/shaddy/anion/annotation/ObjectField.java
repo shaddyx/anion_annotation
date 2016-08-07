@@ -10,9 +10,10 @@ import ua.org.shaddy.anion.annotation.impl.DefaultFieldCondition;
 
 @Target(value=ElementType.FIELD)
 @Retention(value= RetentionPolicy.RUNTIME)
-public @interface Field {
+public @interface ObjectField {
 	int size() default -1;
-	Class<? extends FieldCoder> coder() default DefaultFieldCoder.class;
-	Class<? extends FieldCondition> condition() default DefaultFieldCondition.class;
+	int order() default -1;
+	Class<? extends ObjectFieldCoder> coder() default DefaultFieldCoder.class;
+	Class<? extends ObjectFieldCondition> condition() default DefaultFieldCondition.class;
 	ByteOrder byteOrder() default ByteOrder.LITTLE_ENDIAN; 
 }

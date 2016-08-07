@@ -51,6 +51,9 @@ dependencies {
 		compile "ua.org.shaddy:anion:1.0.16-SNAPSHOT"
 		// https://mvnrepository.com/artifact/net.openhft/compiler
 		compile group: 'net.openhft', name: 'compiler', version: '2.2.5'
+		// https://mvnrepository.com/artifact/org.antlr/ST4
+		compile group: 'org.antlr', name: 'ST4', version: '4.0.7'
+		
 	
         
         //Tests

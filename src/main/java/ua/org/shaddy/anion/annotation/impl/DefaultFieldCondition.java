@@ -1,7 +1,7 @@
 package ua.org.shaddy.anion.annotation.impl;
 
-import ua.org.shaddy.anion.annotation.FieldCondition;
+import ua.org.shaddy.anion.annotation.ObjectFieldCondition;
 
-public class DefaultFieldCondition implements FieldCondition {
+public class DefaultFieldCondition implements ObjectFieldCondition {
 	
 }
