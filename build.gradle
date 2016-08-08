@@ -21,6 +21,11 @@ mainClassName = "ua.org.shaddy.anion.annotation.AnnotationTest"
 targetCompatibility=1.7
 sourceCompatibility=1.7
 
+project.ext {
+	log4jVersion = "2.3"
+	slf4jVersion = "1.7.5"
+}
+
 repositories {
     mavenCentral()
    	maven {
@@ -53,9 +58,16 @@ dependencies {
 		compile group: 'net.openhft', name: 'compiler', version: '2.2.5'
 		// https://mvnrepository.com/artifact/org.antlr/ST4
 		compile group: 'org.antlr', name: 'ST4', version: '4.0.7'
-		
-	
-        
+		// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+		//
+		//	logging
+		//
+	    compile "org.apache.logging.log4j:log4j-core:${log4jVersion}"
+	    compile "org.apache.logging.log4j:log4j-api:${log4jVersion}"
+		compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
+	    compile "org.slf4j:slf4j-api:${slf4jVersion}"
+	    compile "org.slf4j:log4j-over-slf4j:${slf4jVersion}"
         //Tests
         testCompile 'junit:junit:4.12'
         testCompile "org.mockito:mockito-core:1.9.5"
@@ -73,6 +85,10 @@ sourceSets {
         test {
                 java {
                         srcDir "src/test/java"
+                        resources {
+                		srcDirs = ["src/test/resources"]
+                		includes = ["**/*"]
+            		}
                 }
         }
 }

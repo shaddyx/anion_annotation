@@ -8,26 +8,19 @@ import java.util.List;
 import ua.org.shaddy.anion.annotation.Coder;
 import ua.org.shaddy.anion.annotation.FieldDescriptor;
 import ua.org.shaddy.anion.annotation.ObjectField;
-import ua.org.shaddy.anion.annotation.codegenerator.codegenerator.impl.DecoderCodeGenerator;
+import ua.org.shaddy.anion.annotation.codegenerator.codegenerator.impl.CoderCodeGenerator;
+import ua.org.shaddy.anion.annotation.tools.CodeTools;
 
 public class CoderFactory {
 	
-	private Coder buildCoder(String className, List<FieldDescriptor> descriptors){
-		return JavaSourceCompiler.compileAndInstantiate(className, DecoderCodeGenerator.generateCoder(className, descriptors), Coder.class);
+	private Coder buildCoder(Class<?> clazz, List<FieldDescriptor> descriptors){
+		CoderCodeGenerator codeGenerator = new CoderCodeGenerator(clazz, CodeTools.getCoderSimpleClassName(clazz), descriptors);
+		return JavaSourceCompiler.compileAndInstantiate(
+				CodeTools.getCoderSimpleClassName(clazz),
+				codeGenerator.generateCoder(), 
+				Coder.class);
 	}
-	
-	private String getCoderPackageName(Class<?> clazz){
-		return this.getClass().getPackage().toString();
-	}
-	
-	private String getCoderSimpleClassName(Class<?> clazz){
-		return clazz.getName().replace(".", "_") + "_Coder";
-	}
-	
-	private String getCoderFullClassName(Class<?> clazz){
-		return getCoderPackageName(clazz) + "." + getCoderSimpleClassName(clazz);
-	}
-	
+		
 	public Coder makeCoder(Class<?> clazz){
 		Field[] fields = clazz.getDeclaredFields();
 		List<FieldDescriptor> fieldList = new ArrayList<>();
@@ -37,6 +30,6 @@ public class CoderFactory {
 			}
 		}
 		Collections.sort(fieldList);
-		return buildCoder(getCoderFullClassName(clazz), fieldList);
+		return buildCoder(clazz, fieldList);
 	}
 }
