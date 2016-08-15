@@ -1,51 +1,51 @@
 package ua.org.shaddy.anion.annotation.codegenerator.codegenerator.impl;
 
-import java.util.List;
-
 import org.antlr.stringtemplate.StringTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ua.org.shaddy.anion.annotation.Coder;
 import ua.org.shaddy.anion.annotation.FieldDescriptor;
+import ua.org.shaddy.anion.annotation.codegenerator.GeneratorData;
 import ua.org.shaddy.anion.annotation.tools.CodeTools;
 
 public class CoderCodeGenerator {
-	final Logger logger = LoggerFactory.getLogger(getClass());
-	final Class<?> clazz;
-	final String className;
-	final List<FieldDescriptor> descriptors;
-	final FieldCodeGenerator fieldCodeGenerator;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private GeneratorData generatorData;
 	
-	public CoderCodeGenerator(Class<?> clazz, String className, List<FieldDescriptor> descriptors) {
-		super();
-		this.clazz = clazz;
-		this.className = className;
-		this.descriptors = descriptors;
-		fieldCodeGenerator = new FieldCodeGenerator(clazz);
+	
+	public CoderCodeGenerator(GeneratorData generatorData) {
+		this.generatorData = new GeneratorData();
 	}
 	
 	public String generateCoder() {
-		StringBuilder code = CodeTools.genCode(
+		StringTemplate tpl = CodeTools.genCodeTemplate(
 				"package $package$",
 				"public class $className$ implements $coderInterfaceFullClassName$ {",
-				"$methods$",
+				"public $className$ decode($bitStreamEncoderClass$ enc){",
+				"	$decoder$",
+				"}",
+				"	$encoder$",
 				"}"
 		);
-		//public Object decode(BitInputStream bis);
-		//public void encode(BitOutputStream bos, Object obj);
-		StringTemplate tpl = new StringTemplate(code.toString());
-		tpl.setAttribute("coderInterfaceFullClassName", Coder.class.getName());
-		tpl.setAttribute("package", CodeTools.getCoderPackageName(clazz));
-		tpl.setAttribute("className", className);
-		tpl.setAttribute("methods", generateMethods());
+		tpl.setAttribute("decoder", generateDecoder(generatorData));
+		tpl.setAttribute("encoder", generateEncoder(generatorData));
+		CodeTools.addAtributesToTpl(tpl, this.generatorData);
 		return tpl.toString();
 	}
-	private StringBuilder generateMethods() {
-		StringBuilder methodsCode = new StringBuilder(); 
-		for (FieldDescriptor field: descriptors){
-			methodsCode.append(fieldCodeGenerator.generate(field)).append(CodeTools.NL);
+	
+	public String generateDecoder(GeneratorData generatorData) {
+		StringBuilder methodsCode = new StringBuilder();
+		for (FieldDescriptor field: generatorData.getFieldDescriptors()){
+			methodsCode.append(FieldCodeGenerator.generateFieldDecoder(field)).append(CodeTools.NL);
 		}
-		return methodsCode;
+		return methodsCode.toString();
+	}
+
+	public static String generateEncoder(GeneratorData generatorData) {
+		StringBuilder methodsCode = new StringBuilder();
+		for (FieldDescriptor field: generatorData.getFieldDescriptors()){
+			methodsCode.append(FieldCodeGenerator.generateFieldEncoder(field)).append(CodeTools.NL);
+		}
+		return methodsCode.toString();
 	}
 }

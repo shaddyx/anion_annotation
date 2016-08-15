@@ -2,15 +2,20 @@ package ua.org.shaddy.anion.annotation;
 
 import java.lang.reflect.Field;
 
+import ua.org.shaddy.anion.annotation.codegenerator.GeneratorData;
+
 public class FieldDescriptor implements Comparable<FieldDescriptor>{
 	private final ObjectField ofield;
 	private final Field field;
 	private final String name;
-	public FieldDescriptor(ObjectField ofield, Field field, String name) {
+	private final GeneratorData generatorData;
+	
+	public FieldDescriptor(ObjectField ofield, GeneratorData generatorData, Field field, String name) {
 		super();
 		this.ofield = ofield;
 		this.field = field;
 		this.name = name;
+		this.generatorData = generatorData;
 	}
 	public ObjectField getOfield() {
 		return ofield;
@@ -20,6 +25,9 @@ public class FieldDescriptor implements Comparable<FieldDescriptor>{
 	}
 	public String getName() {
 		return name;
+	}
+	public GeneratorData getGeneratorData() {
+		return generatorData;
 	}
 	@Override
 	public String toString() {
